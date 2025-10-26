@@ -21,7 +21,9 @@ We wanted to construct a data model that organizes key information used to navig
 Data Model:
 
 MIST 4610 GP Data Model
-Explanation: Our database is based on the NCAA with hypothetical data included for ease of data insertion. For instance, instead of the University of Georgia the record is the Athens Bulldogs.
+Explanation: 
+
+Our database is based on the NCAA with hypothetical data included for ease of data insertion. For instance, instead of the University of Georgia the record is the Athens Bulldogs.
 
 Beginning with the Teams entity, we made teamID our identifier and included attributes such as teamName and conference. This entity relates to our Coaches entity with a one-to-many relationship because teams have many coaches, but those coaches are linked to only one team. Our Coaches entity is identified by the primary key coachID and contains attributes such as name, role which describes their specific coaching position (Head Coach, Offensive Coordinator, etc.), yearsOfExperience describing the amount of years of coaching experience they have, as well as a foreign key being teamID. Rosters represent the associative entity connecting the many-to-many relationship between Teams and Players as players can be on many teams and teams are composed of many players. Rosters are identified by rosterID, and they have attributes such as a foreign keys playerID and teamID. Additionally, Rosters display the startDate of a player’s commitment to a team as well as the endDate which could be null if the player is still playing on that team playing. Rosters also display the player’s position on that specific team as well as their jersey number on that specific team. The Players entity is identified by a unique playerID which is the primary key of that entity. In addition to that, the Players entity has attributes such as name, the player’s yearInSchool, their height in inches, their weight in pounds, and the status of their scholarship, if applicable. Additionally, the Players entity has a one-to-many relationship with the entity named Injuries as players can have many injuries but a specific instance of an injury can only occur once in one player. Injuries have the primary key injuryID along with attributes such as injuryName, lengthOfRecovery, surgery name if needed, as well as the foreign key playerID which specifies the one-to-many relationship.
 
@@ -58,7 +60,7 @@ Queries:
 
 
 
-Query 1 shows every team and counts how many players are currently listed on their roster. It joins the Teams and Rosters tables using the teamID to associate players with their teams, then groups the results by each team name.
+1. Query 1 shows every team and counts how many players are currently listed on their roster. It joins the Teams and Rosters tables using the teamID to associate players with their teams, then groups the results by each team name.
 
 
 <img width="553" height="175" alt="Screenshot 2025-10-26 at 7 25 15 PM" src="https://github.com/user-attachments/assets/9ae5e49e-3c11-4872-985e-d3a4cfb3c7fe" />\
@@ -78,7 +80,7 @@ SELECT teamName, COUNT(playerID) AS PlayerCount FROM Teams JOIN Rosters ON Teams
 
 Managerial Justification: Roster size directly affects scholarship budgeting, recruiting needs, and practice planning. Athletic departments can use this information to verify roster compliance with NCAA limits (e.g., 85 scholarship players in Division I football) and identify whether certain teams are under- or over-staffed. It also provides insights for coaching staff to balance positional depth across the roster.
 
-Query 2 calculates the total number of offensive yards gained by each player across all games using the Statistics table. The query groups by player name and sums their yards column, returning players in descending order of total yardage.
+2. Query 2 calculates the total number of offensive yards gained by each player across all games using the Statistics table. The query groups by player name and sums their yards column, returning players in descending order of total yardage.
 
 <img width="612" height="152" alt="Screenshot 2025-10-26 at 7 26 23 PM" src="https://github.com/user-attachments/assets/48a9d17c-c0f4-4a07-a8af-17c433bb1376" />\
 
@@ -95,7 +97,7 @@ SELECT name AS PlayerName, SUM(yards) AS TotalYards FROM Players JOIN Statistics
 
 Managerial Justification: Tracking cumulative yardage helps offensive coordinators evaluate player impact and consistency. This data is key for determining award nominations, highlighting top performers in media relations, and identifying players who may deserve more playing time or position adjustments based on productivity.
 
-Query 3 identifies all players who have not yet recorded any game statistics by checking which player IDs are not present in the Statistics table.
+3. Query 3 identifies all players who have not yet recorded any game statistics by checking which player IDs are not present in the Statistics table.
 
 <img width="618" height="707" alt="Screenshot 2025-10-26 at 7 27 19 PM" src="https://github.com/user-attachments/assets/7848cd18-238a-429c-bc8e-7a0b6c030bbe" />
 
@@ -111,7 +113,7 @@ SELECT name FROM Players WHERE playerID NOT IN (SELECT playerID FROM Statistics)
 
 Managerial Justification: This helps coaching staff and analysts find players who have not appeared in any games and make decisions about those players accordingly. Managers can use this information to determine which players may need more opportunities to play or to address what to do with those players in the future.
 
-Query 4 displays all players who have sustained more than one recorded injury. It joins Players and Injuries using playerID, groups the results by player, and filters using a HAVING clause.
+4. Query 4 displays all players who have sustained more than one recorded injury. It joins Players and Injuries using playerID, groups the results by player, and filters using a HAVING clause.
 
 <img width="579" height="652" alt="Screenshot 2025-10-26 at 7 28 16 PM" src="https://github.com/user-attachments/assets/47642145-9c67-4777-addc-1f4a2929cb92" />
 
@@ -126,7 +128,7 @@ SELECT name, COUNT(injuryID) AS TotalInjuries FROM Players JOIN Injuries ON Play
 
 Managerial Justification: Identifying players with frequent injuries allows medical staff to implement personalized recovery or training programs. Coaches can use this information to manage playing time and avoid re-injury, which reduces long-term risk and protects the team’s investment in scholarship athletes.
 
-Query 5 finds the average weight of players for each position across all rosters. It joins Rosters and Players and groups the results by position.
+5. Query 5 finds the average weight of players for each position across all rosters. It joins Rosters and Players and groups the results by position.
 
 <img width="600" height="572" alt="Screenshot 2025-10-26 at 7 29 27 PM" src="https://github.com/user-attachments/assets/c57b2557-f756-4a20-adeb-91f370fd0570" />
 
@@ -141,7 +143,7 @@ SELECT position, ROUND(AVG(weight (in lbs)), 1) AS AvgWeight FROM Rosters JOIN P
 
 Managerial Justification: Weight and conditioning benchmarks are crucial for maintaining competitiveness. This data helps strength and conditioning coaches monitor whether players at each position (e.g., linemen, receivers, linebackers) meet desired physical standards and make training adjustments if a position group is under or over target weight ranges. AI was utilized here to locate the backticks function which allowed for the system to not confuse the parentheses in the column title with SQL script parentheses.
 
-Query 6 shows the number of total games each team has participated in—both home and away. It joins Teams and Games and counts how many times a team appears as either the home or away team.
+6. Query 6 shows the number of total games each team has participated in—both home and away. It joins Teams and Games and counts how many times a team appears as either the home or away team.
 
 <img width="620" height="121" alt="Screenshot 2025-10-26 at 7 29 57 PM" src="https://github.com/user-attachments/assets/3ccba3fc-5fe3-4922-884b-2f3e84fda8ec" />\
 
@@ -159,7 +161,7 @@ SELECT teamName, COUNT(gameID) AS TotalGames FROM Teams JOIN Games ON Teams.team
 
 Managerial Justification: Tracking total games played helps administrators measure team activity levels across the season and can highlight scheduling imbalances. Operations teams can use this data to evaluate travel frequency, ensure scheduling fairness, and make logistical improvements for future seasons.
 
-Query 7 lists all players who currently receive full athletic scholarships, ordered alphabetically by name.
+7. Query 7 lists all players who currently receive full athletic scholarships, ordered alphabetically by name.
 
 <img width="445" height="159" alt="Screenshot 2025-10-26 at 7 30 48 PM" src="https://github.com/user-attachments/assets/227b1e31-8b8b-43aa-99e7-c4962033b83f" />\
 
@@ -177,7 +179,7 @@ SELECT name, yearInSchool, scholarship FROM Players WHERE scholarship = "Full Sc
 
 Managerial Justification: Scholarship allocation is one of the largest financial responsibilities for athletic programs. This query helps compliance officers ensure that scholarship funds are properly assigned and enables administrators to monitor financial obligations and renewal cycles.
 
-Query 8 displays the injuries in the database with the longest reported recovery times, ordered from longest to shortest.
+8. Query 8 displays the injuries in the database with the longest reported recovery times, ordered from longest to shortest.
 
 
 <img width="547" height="143" alt="Screenshot 2025-10-26 at 7 31 36 PM" src="https://github.com/user-attachments/assets/f796ad2d-0789-4a70-a123-5f019c2cd98f" />\
@@ -195,7 +197,7 @@ SELECT injuryName, lengthOfRecovery FROM Injuries ORDER BY CAST(lengthOfRecovery
 
 Managerial Justification: Provides insight into which types of injuries are most severe and time-consuming to heal. This allows sports medicine staff to plan future prevention programs, identify potential insurance or cost implications, and communicate expected recovery timelines to coaches and media. Although we had not yet learned this feature, we utilized AI to accomplish this query as the VARCHAR() data format is not compatible with the ORDER BY DESC or ASC capabilities. Utilizing CAST and UNSIGNED, our string data values were converted to numbers effectively.
 
-Query 9 calculates the average price of tickets sold for each game by joining the Games and Tickets tables and grouping results by gameID.
+9. Query 9 calculates the average price of tickets sold for each game by joining the Games and Tickets tables and grouping results by gameID.
 
 <img width="587" height="97" alt="Screenshot 2025-10-26 at 7 32 37 PM" src="https://github.com/user-attachments/assets/3db45916-d0fb-49a9-9eaa-63e780319ce1" />\
 
@@ -213,7 +215,7 @@ SELECT Games.gameID, ROUND(AVG(CAST(REPLACE(price, '$', '') AS DECIMAL (10,2))),
 
 Managerial Justification: Understanding average ticket prices helps the marketing and sales department assess revenue potential per game. It also reveals which matchups draw higher-paying audiences, allowing pricing strategies to be adjusted for rivalry or high-demand games to maximize profits. Similarly as before, we utilized the CAST function so that we could convert the original VARCHAR value of the price attribute in the Tickets entity to DECIMAL data formats so that we would be able to perform aggregations on the values.
 
-Query 10 lists the five players with the highest total touchdowns recorded across all games.
+10. Query 10 lists the five players with the highest total touchdowns recorded across all games.
 
 
 <img width="565" height="512" alt="Screenshot 2025-10-26 at 7 33 25 PM" src="https://github.com/user-attachments/assets/b8fc6a67-c382-4d74-aa37-f76986c91eb4" />
